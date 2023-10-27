@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import os
+import utilidades as ut
 
 sg.theme('Reddit')
 
@@ -39,14 +40,10 @@ while True:
     # Eventos da janela de Login
     elif janela == janela_login_ :
         if event == 'Logar':
-            with open('banco_de_usuarios.txt','r',encoding='utf-8') as arquivo:
-                for linha in arquivo:
-                    if values['usuario'] != linha:
-                        janela['usuario_invalido'].update(text_color='red')
-                        janela['usuario_invalido'].update('Usuario/Senha invalido')
-                    else:
-                        janela['usuario_invalido'].update('Usuario Logado com Sucesso!!!')
-                        
+            if values['usuario'] == '' and values['senha'] == '':
+                janela['usuario_invalido'].update('Por favor, preencher os campos com email e senha!')
+            else: 
+                ut.ler_usuario_e_senha(values['usuario'], janela)            
         elif event == 'Criar conta':
             janela_login_.hide()
             janela_cadastro_ = janela_cadastro()
@@ -55,9 +52,7 @@ while True:
     elif janela == janela_cadastro_:
         if event == 'Criar':
             janela['conta_criada'].update('Conta Criada!')
-            with open('banco_de_usuarios.txt', 'a', encoding='utf-8', newline='') as arquivo:
-                arquivo.write(values['email'] + os.linesep)
-                arquivo.write(values['senha_cadastro'] + os.linesep)
+            ut.banco_de_usuarios(values['email'], values['senha_cadastro'])
             janela['email'].update('')
             janela['senha_cadastro'].update('')
         if event == 'Voltar':
